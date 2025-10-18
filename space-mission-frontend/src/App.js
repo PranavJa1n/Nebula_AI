@@ -1,121 +1,40 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState } from 'react';
 import { LineChart, Line, BarChart, Bar, PieChart, Pie, ScatterChart, Scatter, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, Cell } from 'recharts';
-import { Rocket, Globe, Satellite, Loader2, AlertCircle, TrendingUp } from 'lucide-react';
-import * as THREE from 'three';
+import { Rocket, Globe as GlobeIcon, Satellite, Loader2, AlertCircle, TrendingUp } from 'lucide-react';
+import Globe from 'react-globe.gl';
 
 const BACKEND_URL = 'http://localhost:8000';
+
+// Space agency markers with exact coordinates
+const spaceAgencyMarkers = [
+  {
+    lat: 13.7199,
+    lng: 80.2304,
+    size: 0.8,
+    color: '#ff9933',
+    label: 'Indian Space Research Organisation - Satish Dhawan Space Centre'
+  },
+  {
+    lat: 28.5729,
+    lng: -80.6490,
+    size: 0.8,
+    color: '#ff3333',
+    label: 'National Aeronautics and Space Administration - Kennedy Space Center'
+  },
+  {
+    lat: 25.9972,
+    lng: -97.1572,
+    size: 0.8,
+    color: '#00ff00',
+    label: 'SpaceX - Starbase Texas'
+  }
+];
 
 const SpaceApp = () => {
   const [query, setQuery] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [results, setResults] = useState(null);
-  const globeRef = useRef(null);
-  const sceneRef = useRef(null);
-
-  // Initialize 3D Globe
-  useEffect(() => {
-    if (!globeRef.current) return;
-
-    const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(75, globeRef.current.clientWidth / globeRef.current.clientHeight, 0.1, 1000);
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
-    
-    renderer.setSize(globeRef.current.clientWidth, globeRef.current.clientHeight);
-    globeRef.current.appendChild(renderer.domElement);
-
-    // Create Earth
-    const geometry = new THREE.SphereGeometry(2, 32, 32);
-    const textureLoader = new THREE.TextureLoader();
-    
-    // Create a basic blue earth with grid
-    const material = new THREE.MeshPhongMaterial({
-      color: 0x2233ff,
-      emissive: 0x112244,
-      specular: 0x333333,
-      shininess: 25,
-      wireframe: false
-    });
-    
-    const earth = new THREE.Mesh(geometry, material);
-    scene.add(earth);
-
-    // Add grid lines for continents effect
-    const wireframe = new THREE.WireframeGeometry(geometry);
-    const line = new THREE.LineSegments(wireframe);
-    line.material.opacity = 0.1;
-    line.material.transparent = true;
-    line.material.color = new THREE.Color(0xffffff);
-    earth.add(line);
-
-    // Add launch sites as glowing points
-    const launchSites = [
-      { lat: 28.5, lon: -80.6, name: 'Kennedy Space Center' }, // Florida
-      { lat: 13.7, lon: 80.2, name: 'Satish Dhawan' }, // India
-      { lat: 34.6, lon: -120.6, name: 'Vandenberg' }, // California
-      { lat: 31.2, lon: 121.5, name: 'Shanghai' }, // China
-    ];
-
-    launchSites.forEach(site => {
-      const phi = (90 - site.lat) * (Math.PI / 180);
-      const theta = (site.lon + 180) * (Math.PI / 180);
-      
-      const x = -(2 * Math.sin(phi) * Math.cos(theta));
-      const y = 2 * Math.cos(phi);
-      const z = 2 * Math.sin(phi) * Math.sin(theta);
-
-      const markerGeometry = new THREE.SphereGeometry(0.05, 8, 8);
-      const markerMaterial = new THREE.MeshBasicMaterial({ color: 0xff3333, emissive: 0xff0000 });
-      const marker = new THREE.Mesh(markerGeometry, markerMaterial);
-      marker.position.set(x, y, z);
-      earth.add(marker);
-    });
-
-    // Add stars
-    const starsGeometry = new THREE.BufferGeometry();
-    const starsMaterial = new THREE.PointsMaterial({ color: 0xffffff, size: 0.02 });
-    
-    const starsVertices = [];
-    for (let i = 0; i < 1000; i++) {
-      const x = (Math.random() - 0.5) * 20;
-      const y = (Math.random() - 0.5) * 20;
-      const z = (Math.random() - 0.5) * 20;
-      starsVertices.push(x, y, z);
-    }
-    
-    starsGeometry.setAttribute('position', new THREE.Float32BufferAttribute(starsVertices, 3));
-    const stars = new THREE.Points(starsGeometry, starsMaterial);
-    scene.add(stars);
-
-    // Lighting
-    const ambientLight = new THREE.AmbientLight(0x404040, 2);
-    scene.add(ambientLight);
-    
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-    directionalLight.position.set(5, 3, 5);
-    scene.add(directionalLight);
-
-    camera.position.z = 5;
-
-    // Animation
-    const animate = () => {
-      requestAnimationFrame(animate);
-      earth.rotation.y += 0.002;
-      stars.rotation.y += 0.0002;
-      renderer.render(scene, camera);
-    };
-    
-    animate();
-    sceneRef.current = { scene, camera, renderer, earth };
-
-    // Cleanup
-    return () => {
-      if (globeRef.current && renderer.domElement) {
-        globeRef.current.removeChild(renderer.domElement);
-      }
-      renderer.dispose();
-    };
-  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -233,7 +152,7 @@ const SpaceApp = () => {
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Rocket className="w-8 h-8 text-purple-400" />
-            <h1 className="text-2xl font-bold text-white">Nebula AI</h1>
+            <h1 className="text-2xl font-bold text-white">Space Mission AI</h1>
           </div>
           <div className="flex items-center gap-4">
             <Satellite className="w-6 h-6 text-purple-300 animate-pulse" />
@@ -245,15 +164,47 @@ const SpaceApp = () => {
       {/* Main Content */}
       <div className="max-w-7xl mx-auto px-4 py-8">
         {/* 3D Globe Section */}
-        <div className="mb-12 text-center">
-          <div className="flex items-center justify-center gap-2 mb-4">
-            <Globe className="w-6 h-6 text-blue-400" />
-            <h2 className="text-3xl font-bold text-white">Global Launch Sites</h2>
+        <div className="mb-12">
+          <div className="text-center mb-4">
+            <div className="flex items-center justify-center gap-2 mb-2">
+              <GlobeIcon className="w-6 h-6 text-blue-400" />
+              <h2 className="text-3xl font-bold text-white">Global Space Agency Locations</h2>
+            </div>
+            <p className="text-gray-400 text-sm">Interactive 3D Earth showing NASA, ISRO, and SpaceX facilities</p>
           </div>
-          <div 
-            ref={globeRef} 
-            className="w-full h-96 mx-auto rounded-xl overflow-hidden bg-black bg-opacity-30 backdrop-blur-sm border border-purple-500 shadow-2xl"
-          />
+          
+          <div className="rounded-xl overflow-hidden border border-purple-500 shadow-2xl bg-black flex items-center justify-center" style={{ height: '400px' }}>
+            <Globe
+              globeImageUrl="//unpkg.com/three-globe/example/img/earth-blue-marble.jpg"
+              backgroundImageUrl="//unpkg.com/three-globe/example/img/night-sky.png"
+              pointsData={spaceAgencyMarkers}
+              pointAltitude={0.01}
+              pointRadius="size"
+              pointColor="color"
+              pointLabel="label"
+              pointsTransitionDuration={1000}
+              atmosphereColor="#4488ff"
+              atmosphereAltitude={0.15}
+              height={400}
+              width={800}
+            />
+          </div>
+          
+          {/* Legend */}
+          <div className="flex justify-center gap-6 mt-4">
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded-full" style={{ backgroundColor: '#ff3333' }}></div>
+              <span className="text-gray-300 text-sm">National Aeronautics and Space Administration (USA)</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded-full" style={{ backgroundColor: '#ff9933' }}></div>
+              <span className="text-gray-300 text-sm">Indian Space Research Organisation (India)</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <div className="w-3 h-3 rounded-full" style={{ backgroundColor: '#00ff00' }}></div>
+              <span className="text-gray-300 text-sm">SpaceX (USA)</span>
+            </div>
+          </div>
         </div>
 
         {/* Query Section */}

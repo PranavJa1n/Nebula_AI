@@ -347,7 +347,7 @@ async def process_query(request: QueryRequest):
         print("\n⚠️ AMBIGUOUS QUERY DETECTED")
         raise HTTPException(
             status_code=400,
-            detail="Please provide a clear and specific query about space missions. Example: 'Show me SpaceX launches in 2024' or 'Give me 5 graphs about ISRO missions'"
+            detail="Please provide a clear and specific query about space missions. Example: 'Show me ISRO launches in 2024' or 'Give me 5 graphs about ISRO missions'"
         )
     
     try:
