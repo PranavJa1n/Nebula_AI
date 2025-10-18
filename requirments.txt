@@ -1,0 +1,27 @@
+# Core FastAPI and server
+fastapi
+uvicorn[standard]
+
+# Data validation
+pydantic
+pydantic-settings
+
+# LangChain and AI
+langchain
+langchain-core
+langchain-openai
+langgraph
+
+# Utilities
+python-dotenv
+httpx
+typing-extensions
+
+# Additional dependencies
+anyio
+openai
+
+# Optional: For future Azure Data Lake integration
+# Uncomment when you have Azure credentials
+# azure-storage-blob==12.23.0
+# azure-identity==1.18.0
