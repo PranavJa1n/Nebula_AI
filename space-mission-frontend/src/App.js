@@ -152,7 +152,7 @@ const SpaceApp = () => {
         <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <Rocket className="w-8 h-8 text-purple-400" />
-            <h1 className="text-2xl font-bold text-white">Space Mission AI</h1>
+            <h1 className="text-2xl font-bold text-white">Nebula AI</h1>
           </div>
           <div className="flex items-center gap-4">
             <Satellite className="w-6 h-6 text-purple-300 animate-pulse" />
