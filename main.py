@@ -67,22 +67,22 @@ else:
 
 # Agent 1: Web Search LLM (temperature 0.5)
 web_search_llm = ChatOpenAI(
-    # model="sonar-pro",
-    model="gemini-2.5-pro",
+    model="sonar-pro",
+    # model="gemini-2.5-pro",
     temperature=0.5,
     api_key=PERPLEXITY_API_KEY,
-    # base_url="https://api.perplexity.ai"
-    base_url=r"https://generativelanguage.googleapis.com/v1beta/openai/"
+    base_url="https://api.perplexity.ai"
+    # base_url=r"https://generativelanguage.googleapis.com/v1beta/openai/"
 )
 
 # Agent 2: Visualization Generator LLM (temperature 1.5)
 visualization_llm = ChatOpenAI(
-    # model="sonar-pro",
-    model="gemini-2.5-pro",
+    model="sonar-pro",
+    # model="gemini-2.5-pro",
     temperature=1.5,
     api_key=PERPLEXITY_API_KEY,
-    # base_url="https://api.perplexity.ai"
-    base_url=r"https://generativelanguage.googleapis.com/v1beta/openai/"
+    base_url="https://api.perplexity.ai"
+    # base_url=r"https://generativelanguage.googleapis.com/v1beta/openai/"
 )
 
 print("✓ Web Search Agent LLM initialized (temperature: 0.5)")
