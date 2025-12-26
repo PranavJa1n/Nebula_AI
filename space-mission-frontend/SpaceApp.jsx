@@ -3,7 +3,7 @@ import { LineChart, Line, BarChart, Bar, PieChart, Pie, ScatterChart, Scatter, X
 import { Rocket, Globe, Satellite, Loader2, AlertCircle, TrendingUp } from 'lucide-react';
 import * as THREE from 'three';
 
-const BACKEND_URL = 'http://localhost:8000';
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8000';
 
 const SpaceApp = () => {
   const [query, setQuery] = useState('');

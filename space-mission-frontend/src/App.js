@@ -3,7 +3,7 @@ import { LineChart, Line, BarChart, Bar, PieChart, Pie, ScatterChart, Scatter, X
 import { Rocket, Globe as GlobeIcon, Satellite, Loader2, AlertCircle, TrendingUp } from 'lucide-react';
 import Globe from 'react-globe.gl';
 
-const BACKEND_URL = 'http://localhost:8000';
+const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:8000';
 
 // Space agency markers with exact coordinates
 const spaceAgencyMarkers = [

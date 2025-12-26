@@ -168,25 +168,6 @@ def agent2_visualization_generator(state: AgentState) -> AgentState:
     print(f"Query: {query}")
     
     try:
-        # Check how many visualizations are requested
-        # num_graphs = 3  # Default
-        # query_lower = query.lower()
-        
-        # # Extract number if specified in query
-        # if "5 graphs" in query_lower or "five graphs" in query_lower:
-        #     num_graphs = 5
-        # elif "4 graphs" in query_lower or "four graphs" in query_lower:
-        #     num_graphs = 4
-        # elif "3 graphs" in query_lower or "three graphs" in query_lower:
-        #     num_graphs = 3
-        # elif "2 graphs" in query_lower or "two graphs" in query_lower:
-        #     num_graphs = 2
-        # elif "1 graph" in query_lower or "one graph" in query_lower:
-        #     num_graphs = 1
-        
-        # print(f"Generating {num_graphs} visualizations...")
-        
-        # Create the prompt with strict JSON format
         viz_prompt = f"""You are a data visualization expert. Based on the following information, analyze the Original Query: {query} and create the specified number of different visualizations.
 
 Data from Research:
@@ -198,7 +179,7 @@ CRITICAL INSTRUCTIONS:
 3. Each visualization must have actual data points with realistic values from the research
 4. Return ONLY valid JSON, no other text
 
-Available visualization types: "bar", "line", "pie", "scatter", "timeline"
+Available visualization types: "bar", "line", "pie", "scatter"
 
 Return STRICTLY in this JSON format:
 {{
@@ -230,12 +211,13 @@ Return STRICTLY in this JSON format:
 IMPORTANT:
 - For "bar" and "line": Use format {{"label": "name", "value": number}}
 - For "pie": Use format {{"label": "category", "value": percentage}}
-- For "timeline": Use format {{"label": "event", "value": year, "date": "YYYY-MM-DD"}}
 - Each visualization should have 3-8 data points
 - Use actual numbers from the research data
 - Make insights meaningful and data-driven
 
-Create Exactly the asked number of visualization in the Original Query: {query} now."""
+Create Exactly the asked number of visualization in the Original Query: {query}
+Do NOT generate visualizations where all data points lie on or near a straight horizontal or vertical line. If the data lacks meaningful variation, summarize it in text instead of plotting a graph. 
+"""
 
         print("\nSending request to Perplexity (Visualization Generator)...")
         response = visualization_llm.invoke([HumanMessage(content=viz_prompt)])
